@@ -1,0 +1,25 @@
+# Ignore Maven target directory (compiled files)
+# target/  <-- REMOVE OR COMMENT OUT THIS LINE
+
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore project metadata
+*.iml
+*.log
+
+# Ignore IDE config
+.idea/
+.vscode/
+
+# Ignore OS system files
+.DS_Store
+Thumbs.db
+
+# Ignore test output
+*.class
+test/
+
+# Ignore Docker ignore itself (not required, but neat)
+.dockerignore

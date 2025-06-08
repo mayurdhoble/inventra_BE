@@ -1,0 +1,9 @@
+# PostgreSQL Configuration Template
+# Copy this file to application-local.properties to use PostgreSQL locally
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/inventra_db
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect

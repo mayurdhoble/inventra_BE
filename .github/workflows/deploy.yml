@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 17
+
+    - name: Build jar
+      run: mvnw clean package -DskipTests
+
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.ECR_REGISTRY }}/inventra-app:latest .
+
+    - name: Push Docker image to ECR
+      run: |
+        docker push ${{ secrets.ECR_REGISTRY }}/inventra-app:latest
+
+    - name: SSH and deploy to EC2
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.ECR_REGISTRY }}/inventra-app:latest
+          docker stop inventra || true
+          docker rm inventra || true
+          docker run -d --name inventra -p 8889:8889 ${{ secrets.ECR_REGISTRY }}/inventra-app:latest
